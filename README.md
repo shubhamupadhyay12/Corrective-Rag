@@ -1,81 +1,65 @@
-# Advanced RAG Pipeline & Query Processing Workflows
+# Corrective RAG (CRAG)
 
-This repository contains a step-by-step modular implementation of advanced **Retrieval-Augmented Generation (RAG)** techniques. It covers concepts ranging from initial retrieval refinement and evaluation to integrating web search fallback, query rewriting, and handling ambiguous user queries.
+A step-by-step implementation of **Corrective Retrieval-Augmented Generation**. Standard RAG trusts whatever the vector search returns. CRAG adds a check: it judges whether the retrieved documents are good enough to answer the question, and if they are not, it corrects course by refining the context and falling back to web search.
 
----
+## The idea
 
-## 📁 Repository Structure
-
-```text
-.
-├── 1_retrieval_refinement.ipynb   # Advanced retrieval strategies & chunk refinement
-├── 2_retrieval_evaluator.ipynb    # Evaluation metrics for retrieved context & answers
-├── 3_web_search_refinement.ipynb  # Integrating fallback web search into RAG pipelines
-├── 4_query_rewrite.ipynb          # Transforming & optimizing queries for vector search
-└── 5_ambiguous.ipynb              # Handling ambiguous user intent & disambiguation workflows
+```
+question -> retrieve from vector DB -> evaluate retrieval quality
+                                          |
+              good enough ----------------+---> refine context -> generate answer
+              not good enough / unsure ---+---> rewrite query -> web search -> generate answer
 ```
 
----
+## Notebooks
 
-## 🚀 Workflows & Notebook Breakdown
+Run them in order. Each one builds on the previous.
 
-### 1. Retrieval Refinement (`1_retrieval_refinement.ipynb`)
-Focuses on enhancing the quality of document retrieval before passing chunks to the LLM. Includes context filtering, re-ranking, and dynamic chunk selection to reduce noise.
+| Notebook | What it covers |
+|---|---|
+| `1_retrieval_refinement.ipynb` | Retrieving documents and refining the retrieved context before it reaches the model |
+| `2_retrieval_evaluator.ipynb` | An evaluator that judges whether the retrieved documents are good enough |
+| `3_web_search_refinement.ipynb` | Falling back to web search when the stored documents are not enough, and refining what comes back |
+| `4_query_rewrite.ipynb` | Rewriting the user's question into a better query for search |
+| `5_ambiguous.ipynb` | Handling the borderline case where the evaluator is not confident either way |
 
-### 2. Retrieval Evaluator (`2_retrieval_evaluator.ipynb`)
-Evaluates the performance of the retrieval and generation components using quantitative metrics (e.g., faithfulness, context precision, recall, and answer relevance).
+## Setup
 
-### 3. Web Search Integration (`3_web_search_refinement.ipynb`)
-Combines local vector databases with real-time web search APIs to handle out-of-domain queries or dynamic real-time information missing from static knowledge bases.
-
-### 4. Query Rewriting (`4_query_rewrite.ipynb`)
-Implements query expansion, sub-query decomposition, and hypothetical document embeddings (HyDE) to reformulate raw user prompts into optimal search queries.
-
-### 5. Ambiguous Query Handling (`5_ambiguous.ipynb`)
-Detects underspecified or ambiguous queries and executes interactive workflows (such as asking clarifying questions or branching search paths) to ensure precise answers.
-
----
-
-## 🛠️ Prerequisites & Setup
-
-### 1. Clone the Repository
-```bash
-git clone https://github.com/shubhamupadhyay12/<your-repo-name>.git
-cd <your-repo-name>
-```
-
-### 2. Install Dependencies
-Make sure you have Python 3.9+ installed. You can set up a virtual environment and install the required packages:
+Requires Python 3.9+.
 
 ```bash
+git clone https://github.com/shubhamupadhyay12/Corrective-Rag.git
+cd Corrective-Rag
+
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install notebook langchain langchain-community openai chromadb ragas tavily-python
+source venv/bin/activate        # Windows: venv\Scripts\activate
+pip install notebook langchain langchain-community openai chromadb tavily-python
 ```
 
-*(Note: Adjust package installations based on the specific framework/LLM providers used in your notebooks, e.g., OpenAI, Ollama, LangChain, LlamaIndex).*
-
-### 3. Set Up API Keys
-Set your environment variables for your LLM and Web Search providers:
+Set your API keys:
 
 ```bash
 export OPENAI_API_KEY="your-openai-api-key"
 export TAVILY_API_KEY="your-tavily-api-key"
 ```
 
----
-
-## 💻 Usage
-
-Run the Jupyter Notebook server:
+Then start Jupyter and open the notebooks in order:
 
 ```bash
 jupyter notebook
 ```
 
-Execute the notebooks sequentially from `1_retrieval_refinement.ipynb` to `5_ambiguous.ipynb` to follow the full pipeline progression.
+## Stack
 
----
+Python, LangChain, ChromaDB (vector store), Tavily (web search), OpenAI, Jupyter
+
+## License
+
+MIT. See [LICENSE](LICENSE).
+
+## Author
+
+Shubham Upadhyay · [GitHub](https://github.com/shubhamupadhyay12) · [LinkedIn](https://www.linkedin.com/in/shubhamupadhyay25)
 
 ## 📄 License
 
